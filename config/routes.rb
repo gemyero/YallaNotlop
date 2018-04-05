@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   # add friend to user's friend list
   post 'users/:id/friends', to: 'user#add_friend_to_friend_list'
 
-  
+  # delete certain user group
+  delete 'users/:id/groups/:gid', to: 'group#delete_group'
   
 end
