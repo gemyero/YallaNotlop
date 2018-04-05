@@ -24,4 +24,21 @@ class OrderController < ApplicationController
         end      
     end
 
+    def change_state
+
+        @order = Order.where(user_id: params[:id], id: params[:oid])[0]
+
+        if @order
+            @order.state = "finished"
+            if @order.save
+                render json: {status: true, message: "order finished"}
+            else
+                render json: {status: false, message: "failed to finish the order"}
+            end
+        else
+            render json: {status: false, message: "failed to finish the order"}
+        end      
+
+    end
+
 end

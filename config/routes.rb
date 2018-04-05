@@ -21,5 +21,8 @@ Rails.application.routes.draw do
   
   # delete certain user group
   delete 'users/:id/groups/:gid', to: 'group#delete_group'
+
+  # change state from waiting to finished
+  patch 'users/:id/orders/:oid', to: 'order#change_state'
   
 end
