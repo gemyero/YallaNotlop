@@ -18,7 +18,8 @@ Rails.application.routes.draw do
 
   #delete order 
   delete 'users/:id/orders/:oid', to: 'order#delete_order'
-
   
+  # delete certain user group
+  delete 'users/:id/groups/:gid', to: 'group#delete_group'
   
 end

@@ -16,4 +16,15 @@ class GroupController < ApplicationController
         end
     end
 
+    def delete_group
+        @user = User.find_by_id(params[:id])
+        @group = @user.groups.find_by_id(params[:gid])
+        if @group and @user
+            @group.destroy
+            render json: {status: true, message: "group deleted successfully"}
+        else
+            render json: {status: false, message: "group not deleted!"}
+        end
+    end
+
 end
