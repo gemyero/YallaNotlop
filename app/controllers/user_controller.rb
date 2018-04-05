@@ -44,4 +44,27 @@ class UserController < ApplicationController
         end
     end
 
+    def add_friend_to_friend_list
+        @user = User.find_by_id(params[:id])
+        if @user
+            @friend = User.find_by_email(params[:user][:email])
+            if @friend 
+                if @friend == @user
+                    render json: {status: false, message:'you can not add yourself to your friend list!'}
+                else
+                    if @user.friends.include?(@friend)
+                        render json: {status: false, message:'friend already in database'} 
+                    else
+                        @user.friends << @friend
+                        render json: {status: true, message:'friend added to friend list successfully'}
+                    end
+                end
+            else
+                render json: {status: false, message:'friend not found in database'}    
+            end
+        else
+            render json: {status: false, message:'user not found in database'}
+        end        
+    end
+
 end

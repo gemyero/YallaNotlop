@@ -9,5 +9,8 @@ Rails.application.routes.draw do
 
   # add friend to group
   post 'groups/:id/users/:uid/friends', to: 'user#add_friend_to_group'
+
+  # add friend to user's friend list
+  post 'users/:id/friends', to: 'user#add_friend_to_friend_list'
   
 end
