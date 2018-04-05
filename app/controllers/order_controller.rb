@@ -13,7 +13,15 @@ class OrderController < ApplicationController
     end
 
     def delete_order
-        
+       
+        @order = Order.where(user_id: params[:id], id: params[:oid])[0]
+
+        if @order
+            @order.destroy
+            render json: {status: true, message: "order canceled"}
+        else
+            render json: {status: false, message: "failed to delete the order"}
+        end      
     end
 
 end
