@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   # add new group to certain user
   post 'users/:id/groups', to: 'group#add_group'
 
+  #add order to certain user
+  post 'users/:id/orders', to: 'order#add_order'
+
   # add user to group
   # post 'groups/:id/users', to: 'user#add_user_to_group'
   
