@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   # add friend to user's friend list
   post 'users/:id/friends', to: 'user#add_friend_to_friend_list'
 
+  #delete order 
+  delete 'users/:id/orders/:oid', to: 'order#delete_order'
+
   
   
 end
