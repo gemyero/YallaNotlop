@@ -20,5 +20,9 @@ User.first.groups << Group.create(name: 'sd', user:User.first)
 User.first.groups << Group.create(name: 'iot', user:User.first)
 User.first.groups << Group.create(name: 'cloud', user:User.first)
 
+User.first.friends << User.find(2)
+User.first.friends << User.find(3)
+User.first.friends << User.find(4)
+
 
 
