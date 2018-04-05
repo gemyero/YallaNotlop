@@ -10,7 +10,12 @@ Rails.application.routes.draw do
   #add order to certain user
   post 'users/:id/orders', to: 'order#add_order'
 
-  # add user to group
-  # post 'groups/:id/users', to: 'user#add_user_to_group'
+  # add friend to group
+  post 'groups/:id/users/:uid/friends', to: 'user#add_friend_to_group'
+
+  # add friend to user's friend list
+  post 'users/:id/friends', to: 'user#add_friend_to_friend_list'
+
+  
   
 end
