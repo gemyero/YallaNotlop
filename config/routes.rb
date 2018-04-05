@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   # add friend to user's friend list
   post 'users/:id/friends', to: 'user#add_friend_to_friend_list'
 
-  #delete order 
+  # delete order 
   delete 'users/:id/orders/:oid', to: 'order#delete_order'
   
   # delete certain user group
@@ -24,5 +24,8 @@ Rails.application.routes.draw do
 
   # change state from waiting to finished
   patch 'users/:id/orders/:oid', to: 'order#change_state'
+  
+  # delete friend from group of user
+  delete 'users/:uid/groups/:gid/friends/:fid', to: 'user#delete_friend_from_group'
   
 end

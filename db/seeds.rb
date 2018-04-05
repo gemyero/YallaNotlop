@@ -13,9 +13,16 @@ User.create(name: 'tarek', password:'123456', email:'tarek@yahoo.com', provider:
 User.create(name: 'hassan', password:'123456', email:'hassan@yahoo.com', provider: 'local')
 
 User.first.groups << Group.create(name: 'os', user:User.first)
+Group.first.users << User.find(2)
+Group.first.users << User.find(3)
+Group.first.users << User.find(4)
 User.first.groups << Group.create(name: 'sd', user:User.first)
 User.first.groups << Group.create(name: 'iot', user:User.first)
 User.first.groups << Group.create(name: 'cloud', user:User.first)
+
+User.first.friends << User.find(2)
+User.first.friends << User.find(3)
+User.first.friends << User.find(4)
 
 
 
