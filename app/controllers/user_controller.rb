@@ -79,4 +79,18 @@ class UserController < ApplicationController
         end
     end
 
+    def delete_friend_from_friend_list
+        @user = User.find_by_id(params[:uid])
+        @friend = User.find_by_id(params[:fid])
+        if @user and @friend
+            @friend.groups.each do |item|
+                item.destroy
+            end
+            @user.friends.find_by_id(@friend.id).destroy
+            render json: {status: true, message: "friend deleted successfully"}
+        else
+            render json: {status: false, message: "friend not deleted!"}
+        end
+    end
+
 end

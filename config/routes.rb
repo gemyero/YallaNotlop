@@ -27,5 +27,8 @@ Rails.application.routes.draw do
 
   # delete friend from group of user
   delete 'users/:uid/groups/:gid/friends/:fid', to: 'user#delete_friend_from_group'
+
+  # delete friend from user's friend list
+  delete 'users/:uid/friends/:fid', to: 'user#delete_friend_from_friend_list'
   
 end
