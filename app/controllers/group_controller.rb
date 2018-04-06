@@ -22,7 +22,7 @@ class GroupController < ApplicationController
         if @group and @user
             @group.destroy           
             @group.users.each do |item|
-                item.destroy
+                item.delete
             end
             render json: {status: true, message: "group deleted successfully"}
         else
