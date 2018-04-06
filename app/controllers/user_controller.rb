@@ -72,26 +72,19 @@ class UserController < ApplicationController
         @group = @user.groups.find_by_id(params[:gid])
         @friend = @group.users.find_by_id(params[:fid])
         if @group and @user and @friend
-            @friend.destroy
-            render json: {status: true, message: "friend deleted successfully"}
+            @group.users.delete(@friend)
+            render json: {status: true, message: "friend deleted from group successfully"}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
     end              
 
-
-    # need modification
     def delete_friend_from_friend_list
         @user = User.find_by_id(params[:uid])
-        @friend = User.find_by_id(params[:fid])
+        @friend = @user.friends.find_by_id(params[:fid])
         if @user and @friend
-            # @friend.groups.each do |item|
-            #     item.delete
-            # end
-            @user.friends.each do |item| 
-                puts "*****#{item}*******"
-            end
-            render json: {status: true, message: "friend deleted successfully"}
+            @user.friends.delete(@friend)
+            render json: {status: true, message: "friend deleted from friendlist successfully"}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
