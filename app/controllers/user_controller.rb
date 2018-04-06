@@ -77,16 +77,20 @@ class UserController < ApplicationController
         else
             render json: {status: false, message: "friend not deleted!"}
         end
-    end
+    end              
 
+
+    # need modification
     def delete_friend_from_friend_list
         @user = User.find_by_id(params[:uid])
         @friend = User.find_by_id(params[:fid])
         if @user and @friend
-            @friend.groups.each do |item|
-                item.destroy
+            # @friend.groups.each do |item|
+            #     item.delete
+            # end
+            @user.friends.each do |item| 
+                puts "*****#{item}*******"
             end
-            @user.friends.find_by_id(@friend.id).destroy
             render json: {status: true, message: "friend deleted successfully"}
         else
             render json: {status: false, message: "friend not deleted!"}
