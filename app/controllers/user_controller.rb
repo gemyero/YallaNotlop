@@ -1,5 +1,7 @@
 class UserController < ApplicationController
 
+    skip_before_action :authenticate_request, only: %i[login register]
+
     def list_group_users
         @group = Group.find_by_id(params[:id])
         if (@group)
@@ -99,6 +101,26 @@ class UserController < ApplicationController
         else
             render json: { status: false, message: @user.errors }
         end 
+    end
+
+    def login
+        authenticate params[:email], params[:password]
+    end
+
+    # private section 
+    private
+    
+    def authenticate(email, password)
+        command = AuthenticateUser.call(email, password)
+
+        if command.success?
+        render json: {
+            access_token: command.result,
+            message: 'Login Successful'
+        }
+        else
+        render json: { error: command.errors }, status: :unauthorized
+        end
     end
 
 end

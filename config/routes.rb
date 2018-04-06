@@ -39,5 +39,8 @@ Rails.application.routes.draw do
 
   # add new user
   post 'users', to: 'user#register'
+
+  # login user
+  post 'users/login', to: 'user#login'
   
 end
