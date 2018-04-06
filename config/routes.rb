@@ -37,5 +37,7 @@ Rails.application.routes.draw do
   # delete order detail for a certain user (oid : order detail id)
   delete 'users/:id/order_details/:oid', to: 'order_detail#delete_order_details'
 
+  # add new user
+  post 'users', to: 'user#register'
   
 end

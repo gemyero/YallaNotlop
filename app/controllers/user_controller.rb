@@ -90,4 +90,15 @@ class UserController < ApplicationController
         end
     end
 
+    def register
+        user_params = params.permit(:name, :email, :password)
+        @user = User.create(user_params)
+        if @user.save
+            response = { message: 'User created successfully'}
+            render json: { status: true, message: 'User created successfully' }
+        else
+            render json: { status: false, message: @user.errors }
+        end 
+    end
+
 end

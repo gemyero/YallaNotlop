@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-
+    # encrypt password
     has_secure_password
 
+    # user associations
     has_many :order_details
     has_and_belongs_to_many :groups
     has_many :orders
@@ -9,4 +10,7 @@ class User < ApplicationRecord
     has_and_belongs_to_many :friends, class_name: "User", 
     foreign_key: "user_id", association_foreign_key: "friend_id", 
     :join_table => 'friends'
+
+    # user validations
+    validates :email, uniqueness: true
 end
