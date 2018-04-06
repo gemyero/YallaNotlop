@@ -40,13 +40,13 @@ Rails.application.routes.draw do
   # add new user
   post 'users', to: 'user#register'
 
-  # change state of user notification to opened = true
-  patch 'users/:id/notifications/:nid', to: 'notification#open_notification'
-
   # get all notifications for a user
   get 'users/:id/notifications', to: 'notification#get_all_notifications'
-  
+
   # login user
   post 'users/login', to: 'user#login'
+
+  # join order notification
+  post 'users/:id/notifications', to: 'notification#join_order'
   
 end

@@ -10,7 +10,9 @@ class OrderController < ApplicationController
 
             params[:friends].each { |friend|
                 if User.find_by_id(friend)
-                    Notification.create({user_id: friend, notif_type: "invite", opened: false, order_id: @order[:id]})
+                    Notification.create({user_id: friend, notif_type: "invite", 
+                                        order_finished: false, order_id: @order[:id],
+                                        name: @user.name})
                 end
             }
 
@@ -38,7 +40,8 @@ class OrderController < ApplicationController
 
         if @order
             @order.state = "finished"
-            if @order.save                
+            if @order.save
+                Notification.where(order_id: params[:oid]).update_all(order_finished: true)                
                 render json: {status: true, message: "order finished"}
             else
                 render json: {status: false, message: "failed to finish the order"}
