@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   delete 'users/:id/groups/:gid', to: 'group#delete_group'
 
   # change state from waiting to finished
-  post 'users/:id/orders/:oid', to: 'order#change_state'
+  patch 'users/:id/orders/:oid', to: 'order#change_state'
 
   # delete friend from group of user
   delete 'users/:uid/groups/:gid/friends/:fid', to: 'user#delete_friend_from_group'
