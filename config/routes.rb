@@ -46,4 +46,7 @@ Rails.application.routes.draw do
   # get all notifications for a user
   get 'users/:id/notifications', to: 'notification#get_all_notifications'
   
+  # login user
+  post 'users/login', to: 'user#login'
+  
 end
