@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   # add order detail after user accept join request
   post 'users/:id/order_details', to: 'order_detail#add_order_details'
 
-  # delete order detail for a certain user
+  # delete order detail for a certain user (oid : order detail id)
   delete 'users/:id/order_details/:oid', to: 'order_detail#delete_order_details'
 
   
