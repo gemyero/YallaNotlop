@@ -3,9 +3,8 @@ class CreateUsers < ActiveRecord::Migration[5.1]
     create_table :users do |t|
       t.string :name
       t.string :password_digest
-      t.string :password_confirmation      
       t.string :email
-      t.string :provider
+      t.string :provider, default: 'local'
 
       t.timestamps
     end
