@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    skip_before_action :authenticate_request, only: %i[login register]
-    skip_before_action :check_user, only: %i[login register]
+    skip_before_action :authenticate_request, only: %i[login register forget_password]
+    skip_before_action :check_user, only: %i[login register forget_password]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -107,6 +107,19 @@ class UserController < ApplicationController
 
     def login
         authenticate params[:email], params[:password]
+    end
+
+    def forget_password
+        params.permit(:email)
+        @user = User.find_by_email(params[:email])
+        if @user
+            token = JsonWebToken.encode(user_id: @user.id, exp: 2.hours.from_now)
+            body = "link_to_front?token=#{token}"
+            AppMailer.send_mail(@user.email, body, 'Password Reset').deliver!
+            render json: {status: true, message: "Email sent successfully!"}
+        else
+            render json: {status: false, message: "Email not sent!"}
+        end
     end
 
     # private section 

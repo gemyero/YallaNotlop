@@ -59,4 +59,6 @@ Rails.application.routes.draw do
   # view notification of user
   patch 'users/:uid/notifications', to: 'notification#view_notifications'
 
+  post 'password/forget', to: 'user#forget_password'
+
 end
