@@ -1,5 +1,7 @@
 class GroupController < ApplicationController
 
+    before_action :check_user
+
     def add_group
         params.require(:group).permit!
         params[:group][:user_id] = params[:uid]
