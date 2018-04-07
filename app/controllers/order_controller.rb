@@ -2,29 +2,29 @@ class OrderController < ApplicationController
 
     def add_order
         params.require(:order).permit!       
-        @user = User.find_by_id(params[:id])
+        @user = User.find_by_id(params[:uid])
 
         if @user
-            params[:order][:user_id] = params[:id]
+            params[:order][:user_id] = params[:uid]
             @order = Order.create(params[:order])
 
             params[:friends].each { |friend|
-                if User.find_by_id(friend)
+                if @user.friends.find_by_id(friend)
                     Notification.create({user_id: friend, notif_type: "invite", 
                                         order_finished: false, order_id: @order[:id],
-                                        name: @user.name})
+                                        name: @user.name, viewed: false})
                 end
             }
 
-            render json: {status: true, message: "group added successfully"}
+            render json: {status: true, message: "order added successfully"}
         else
-            render json: {status: false, message: "no user with id = #{params[:id]}"}
+            render json: {status: false, message: "no user with id = #{params[:uid]}"}
         end        
     end
 
     def delete_order
        
-        @order = Order.where(user_id: params[:id], id: params[:oid])[0]
+        @order = Order.where(user_id: params[:uid], id: params[:oid])[0]
 
         if @order
             @order.destroy
@@ -36,7 +36,7 @@ class OrderController < ApplicationController
 
     def change_state
        
-        @order = Order.where(user_id: params[:id], id: params[:oid])[0]
+        @order = Order.where(user_id: params[:uid], id: params[:oid])[0]
 
         if @order
             @order.state = "finished"

@@ -1,8 +1,8 @@
 class NotificationController < ApplicationController
     
     def get_all_notifications
-        if User.find_by_id(params[:id])
-            @notifications = Notification.where(user_id: params[:id])
+        if User.find_by_id(params[:uid])
+            @notifications = Notification.where(user_id: params[:uid])
             render json: {status: true, message: @notifications}
         else
             render json: {status: false, message: "failed to get notifications"}
@@ -12,13 +12,21 @@ class NotificationController < ApplicationController
     def join_order
         params.require(:notification).permit! 
 
-        if User.find_by_id(params[:id])
+        if User.find_by_id(params[:uid])
             Notification.create({name: params[:name], order_id: params[:order_id],
-                                user_id: params[:id], order_finished: false, notif_type: "join"})
+                                user_id: params[:uid], order_finished: false, notif_type: "join"})
             render json: {status: true, message: "notification added"}
         else
             render json: {status: false, message: "failed to add notification"}
         end
     end
-    
+
+    def view_notifications
+        if User.find_by_id(params[:uid])
+            Notification.where(user_id: params[:uid]).update_all(viewed: true) 
+            render json: {status: true, message: "notification viewed"}
+        else
+            render json: {status: false, message: "failed to view notifications"}
+        end
+    end    
 end
