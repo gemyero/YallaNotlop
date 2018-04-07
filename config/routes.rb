@@ -41,12 +41,14 @@ Rails.application.routes.draw do
   delete 'users/:id/order_details/:oid', to: 'order_detail#delete_order_details'
 
   # add new user
+  # body -> name, email, password, provider in case FB and google only
   post 'users', to: 'user#register'
 
   # get all notifications for a user
   get 'users/:id/notifications', to: 'notification#get_all_notifications'
 
   # login user
+  # body -> email, password
   post 'users/login', to: 'user#login'
 
   # join order notification
