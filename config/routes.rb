@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  # action cable server URI
+  mount ActionCable.server => '/cable'
+
   # list certain group users
   get 'users/:uid/groups/:gid/users', to: 'user#list_group_users'
 
