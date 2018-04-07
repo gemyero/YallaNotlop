@@ -59,6 +59,13 @@ Rails.application.routes.draw do
   # view notification of user
   patch 'users/:uid/notifications', to: 'notification#view_notifications'
 
+  # route to forget password
+  # body -> email
   post 'password/forget', to: 'user#forget_password'
+
+  # route to reset password
+  # body -> password
+  # query string -> token=
+  post 'password/reset', to: 'user#reset_password'
 
 end

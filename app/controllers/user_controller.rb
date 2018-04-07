@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    skip_before_action :authenticate_request, only: %i[login register forget_password]
-    skip_before_action :check_user, only: %i[login register forget_password]
+    skip_before_action :authenticate_request, only: %i[login register forget_password reset_password]
+    skip_before_action :check_user, only: %i[login register forget_password reset_password]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -119,6 +119,21 @@ class UserController < ApplicationController
             render json: {status: true, message: "Email sent successfully!"}
         else
             render json: {status: false, message: "Email not sent!"}
+        end
+    end
+
+    def reset_password
+        params.permit(:password, :token)
+        password = params[:password]
+        token = params[:token]
+        body = JsonWebToken.decode(token)
+        user_id = body["user_id"]
+        @user = User.find_by_id(user_id)
+        if @user
+            @user.update(password: password)
+            render json: {status: true, message: 'password updated successfully!'}
+        else
+            render json: {status: false, message: 'user not found!'}
         end
     end
 
