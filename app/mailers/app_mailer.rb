@@ -4,6 +4,7 @@ class AppMailer < ApplicationMailer
         mail(
             to: email,
             subject: subject,
+            content_type: "text/html",
             body: body
         )
     end

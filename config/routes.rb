@@ -68,4 +68,8 @@ Rails.application.routes.draw do
   # query string -> token=
   post 'password/reset', to: 'user#reset_password'
 
+  get 'users', to: 'user#index'
+
+  get 'users/:uid/orders', to: 'order#list_user_orders'
+
 end
