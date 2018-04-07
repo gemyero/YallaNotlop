@@ -71,7 +71,7 @@ class UserController < ApplicationController
 
     def delete_friend_from_group
         @user = User.find_by_id(params[:uid])
-        @group = @user.groups.find_by_id(params[:gid])
+        @group = @user.groups_created.find_by_id(params[:gid])
         @friend = @group.users.find_by_id(params[:fid])
         if @group and @user and @friend
             @group.users.delete(@friend)
