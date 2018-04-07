@@ -3,6 +3,7 @@ class User < ApplicationRecord
     has_secure_password
 
     # user associations
+    has_many :groups_created, class_name: "Group"
     has_many :order_details
     has_and_belongs_to_many :groups
     has_many :orders
