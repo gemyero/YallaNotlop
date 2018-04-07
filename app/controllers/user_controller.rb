@@ -2,7 +2,6 @@ class UserController < ApplicationController
 
     skip_before_action :authenticate_request, only: %i[login register]
     skip_before_action :check_user, only: %i[login register]
-    # before_action :check_user, except: [:login, :register]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -125,11 +124,5 @@ class UserController < ApplicationController
         render json: { error: command.errors }, status: :unauthorized
         end
     end
-
-    # def check_user
-    #     if @current_user.id != params[:uid].to_i
-    #         render json: {status: false, message: "You are not allowed to access this information!"}
-    #     end
-    # end
 
 end
