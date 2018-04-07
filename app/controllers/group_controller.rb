@@ -2,7 +2,7 @@ class GroupController < ApplicationController
 
     def add_group
         params.require(:group).permit!
-        params[:group][:user_id] = params[:id]
+        params[:group][:user_id] = params[:uid]
         matched_group = Group.where(user_id: params[:group][:user_id], name: params[:group][:name])[0]
         if matched_group
             render json: {status: false, message: "group already exists"}
@@ -17,7 +17,7 @@ class GroupController < ApplicationController
     end
 
     def delete_group
-        @user = User.find_by_id(params[:id])
+        @user = User.find_by_id(params[:uid])
         @group = Group.find_by_id(params[:gid])
         if @group and @user
             @group.destroy           

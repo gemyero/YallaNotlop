@@ -3,7 +3,8 @@ class UserController < ApplicationController
     skip_before_action :authenticate_request, only: %i[login register]
 
     def list_group_users
-        @group = Group.find_by_id(params[:id])
+        @user = User.find_by_id(params[:uid])
+        @group = @user.groups_created.find_by_id(params[:gid])
         if (@group)
             render json: @group.users
         else
@@ -16,7 +17,7 @@ class UserController < ApplicationController
         @user = User.find_by_id(params[:uid])
 
         if @user
-            @group = Group.find_by_id(params[:id])
+            @group = Group.find_by_id(params[:gid])
             if @group
                 @friend = User.find_by_name(params[:user][:name])
                 if @friend
@@ -47,7 +48,7 @@ class UserController < ApplicationController
     end
 
     def add_friend_to_friend_list
-        @user = User.find_by_id(params[:id])
+        @user = User.find_by_id(params[:uid])
         if @user
             @friend = User.find_by_email(params[:user][:email])
             if @friend 
