@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-    include ActionController::Cookies # include ccookies 
     before_action :authenticate_request
     before_action :check_user  
     attr_reader :current_user
