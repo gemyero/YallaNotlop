@@ -11,8 +11,12 @@ class OrderController < ApplicationController
             if @order.save
                 @all_friends = @user.friends
                 @all_friends.each{ |friend|
-                                 
-
+                    ActionCable.server.broadcast "activities_#{friend.id}",{
+                        order_id: @order[:id],
+                        name: @user.name,
+                        restaurant: @order.restaurant,
+                        order_for: @order.order_for
+                    } 
                 }
             end
 
