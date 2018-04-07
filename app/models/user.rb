@@ -13,5 +13,5 @@ class User < ApplicationRecord
     :join_table => 'friends'
 
     # user validations
-    validates :email, uniqueness: true
+    # validates :email, uniqueness: true
 end

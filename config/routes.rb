@@ -62,4 +62,21 @@ Rails.application.routes.draw do
   # view notification of user
   patch 'users/:uid/notifications', to: 'notification#view_notifications'
 
+  # route to forget password
+  # body -> email
+  post 'password/forget', to: 'user#forget_password'
+
+  # route to reset password
+  # body -> password
+  # query string -> token=
+  post 'password/reset', to: 'user#reset_password'
+
+  # list user orders with pagination
+  # ex: users/1/orders?page=2&per_page=3
+  get 'users/:uid/orders', to: 'order#list_user_orders'
+
+  # list user friends with pagination
+  # ex: users/1/friends?page=2&per_page=3
+  get 'users/:uid/friends', to: 'user#list_user_friends'
+
 end

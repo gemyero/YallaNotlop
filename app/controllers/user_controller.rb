@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    skip_before_action :authenticate_request, only: %i[login register]
-    skip_before_action :check_user, only: %i[login register]
+    skip_before_action :authenticate_request, only: %i[login register forget_password reset_password]
+    skip_before_action :check_user, only: %i[login register forget_password reset_password]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -107,6 +107,45 @@ class UserController < ApplicationController
 
     def login
         authenticate params[:email], params[:password]
+    end
+
+    def forget_password
+        params.permit(:email)
+        @user = User.find_by_email(params[:email])
+        if @user
+            token = JsonWebToken.encode(user_id: @user.id, exp: 2.hours.from_now)
+            body = "<a href=\"link_to_front?token=#{token}\">link_to_front?token=#{token}</a>"
+            AppMailer.send_mail(@user.email, body, 'Password Reset').deliver!
+            render json: {status: true, message: "Email sent successfully!"}
+        else
+            render json: {status: false, message: "Email not sent!"}
+        end
+    end
+
+    def reset_password
+        params.permit(:password, :token)
+        password = params[:password]
+        token = params[:token]
+        body = JsonWebToken.decode(token)
+        user_id = body["user_id"]
+        @user = User.find_by_id(user_id)
+        if @user
+            @user.update(password: password)
+            render json: {status: true, message: 'password updated successfully!'}
+        else
+            render json: {status: false, message: 'user not found!'}
+        end
+    end
+
+    def list_user_friends
+        page = params[:page] || 1
+        per_page = params[:per_page] || 5
+        @user = User.find_by_id(params[:uid])
+        if @user
+            @friends = User.find(params[:uid]).friends.page(page).per(per_page)
+            render json: @friends
+        else
+        end
     end
 
     # private section 

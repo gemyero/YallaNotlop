@@ -47,4 +47,20 @@ Rails.application.configure do
 
   # enforce ssl
   # config.force_ssl = true
+
+  # mail configurations
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default :charset => "utf-8"
+  # SMTP settings for gmail
+  config.action_mailer.smtp_settings = {
+  :address              => "smtp.gmail.com",
+  :port                 => 587,
+  :domain               => 'smtp.gmail.com',
+  :user_name            => 'yalla.notlop.app@gmail.com',
+  :password             => '12345678//',
+  :authentication       => :login,
+  :enable_starttls_auto => true
+  }
 end
