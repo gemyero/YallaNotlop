@@ -72,4 +72,6 @@ Rails.application.routes.draw do
   # ex: users/1/orders?page=2&per_page=3
   get 'users/:uid/orders', to: 'order#list_user_orders'
 
+  get 'users/:uid/friends', to: 'user#list_user_friends'
+
 end

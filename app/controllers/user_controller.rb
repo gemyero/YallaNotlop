@@ -137,6 +137,17 @@ class UserController < ApplicationController
         end
     end
 
+    def list_user_friends
+        page = params[:page] || 1
+        per_page = params[:per_page] || 5
+        @user = User.find_by_id(params[:uid])
+        if @user
+            @friends = User.find(params[:uid]).friends.page(page).per(per_page)
+            render json: @friends
+        else
+        end
+    end
+
     # private section 
     private
     
