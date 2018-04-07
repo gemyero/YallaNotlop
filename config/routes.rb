@@ -68,8 +68,8 @@ Rails.application.routes.draw do
   # query string -> token=
   post 'password/reset', to: 'user#reset_password'
 
-  get 'users', to: 'user#index'
-
+  # list user orders with pagination
+  # ex: users/1/orders?page=2&per_page=3
   get 'users/:uid/orders', to: 'order#list_user_orders'
 
 end
