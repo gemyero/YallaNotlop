@@ -8,17 +8,25 @@ class OrderController < ApplicationController
             params[:order][:user_id] = params[:uid]
             @order = Order.create(params[:order])
 
+            if @order.save
+                @all_friends = @user.friends
+                @all_friends.each{ |friend|
+                                 
+
+                }
+            end
+
             params[:friends].each { |friend|
                 if @user.friends.find_by_id(friend)
-                    notif = Notification.create({user_id: friend, notif_type: "invite", 
+                    @notif = Notification.create({user_id: friend, notif_type: "invite", 
                                         order_finished: false, order_id: @order[:id],
                                         name: @user.name, viewed: false})
-                    if notif.save
+                    if @notif.save
                         ActionCable.server.broadcast "notifications_#{friend}",{
-                            message: "#{@user.name} invited you to join his order",
-                            order_id: @order[:id]
-                        }
-                       
+                            type: "invite",
+                            order_id: @order[:id],
+                            name: @user.name
+                        }                       
                     end
                 end
             }
