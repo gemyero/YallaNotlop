@@ -28,7 +28,7 @@ class UserController < ApplicationController
                             render json: {status: false, message: 'group already contain friend'}
                         else
                             @group.users << @friend
-                            render json: {status: true, message: 'friend added to the group'}
+                            render json: {status: true, message: @friend}
                         end
                     else
                         # not in friend list
