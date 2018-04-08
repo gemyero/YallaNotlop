@@ -30,4 +30,14 @@ class GroupController < ApplicationController
         end
     end
 
+    def list_user_groups
+        @user = User.find_by_id(params[:uid])
+        if @user
+            @groups = @user.groups_created
+            render json: @groups
+        else
+            render json: { status: false, message: "user not found!" }
+        end
+    end
+
 end
