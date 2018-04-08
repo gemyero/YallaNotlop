@@ -21,10 +21,12 @@ class OrderController < ApplicationController
             end
 
             params[:friends].each { |friend|
+                p @user.friends.find_by_id(friend)
                 if @user.friends.find_by_id(friend)
-                    @notif = Notification.create({user_id: friend, notif_type: "invite", 
+                    @notif = Notification.create(user_id: friend, notif_type: "invite", 
                                         order_finished: false, order_id: @order[:id],
-                                        name: @user.name, viewed: false})
+                                        name: @user.name, viewed: false)
+                    p @notif
                     if @notif.save
                         ActionCable.server.broadcast "notifications_#{friend}",{
                             type: "invite",

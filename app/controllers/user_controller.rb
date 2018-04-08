@@ -60,7 +60,7 @@ class UserController < ApplicationController
                         render json: {status: false, message:'friend already in database'} 
                     else
                         @user.friends << @friend
-                        render json: {status: true, message: @friend}
+                        render json: {status: true, message: {id: @friend.id, name: @friend.name}}
                     end
                 end
             else
@@ -77,7 +77,7 @@ class UserController < ApplicationController
         @friend = @group.users.find_by_id(params[:fid])
         if @group and @user and @friend
             @group.users.delete(@friend)
-            render json: {status: true, message: "friend deleted from group successfully"}
+            render json: {status: true, message: @group.users}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
@@ -85,10 +85,15 @@ class UserController < ApplicationController
 
     def delete_friend_from_friend_list
         @user = User.find_by_id(params[:uid])
+        # p @user
+        p params[:fid]
         @friend = @user.friends.find_by_id(params[:fid])
+        p @friend
         if @user and @friend
             @user.friends.delete(@friend)
-            render json: {status: true, message: "friend deleted from friendlist successfully"}
+            # redirect_to action: "list_user_friends", uid: params[:uid]
+            # @user.friends
+            render json: {status: true, message: @user.friends}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
