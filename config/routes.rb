@@ -82,4 +82,13 @@ Rails.application.routes.draw do
   # list certain user groups
   get 'users/:uid/groups', to: 'group#list_user_groups'
 
+  # login with facebook
+  post 'users/login/facebook', to: 'user#login_facebook'
+
+  # login with google
+  post 'users/login/google', to: 'user#login_google'
+
+  # get user data
+  get 'users/:uid', to: 'user#fetch_user'
+
 end

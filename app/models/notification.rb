@@ -6,6 +6,5 @@ class Notification < ApplicationRecord
 
     # notification validation
     # validates :notif_type, :order_finished, :viewed, :name, presence: true
-    # validates
 
 end

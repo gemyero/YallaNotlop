@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    # skip_before_action :authenticate_request, only: %i[login register forget_password reset_password]
-    # skip_before_action :check_user, only: %i[login register forget_password reset_password]
+    skip_before_action :authenticate_request, only: %i[login register forget_password reset_password login_facebook login_google]
+    skip_before_action :check_user, only: %i[login register forget_password reset_password login_google]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -153,6 +153,68 @@ class UserController < ApplicationController
         end
     end
 
+    def login_facebook
+        params.permit(:_profile)
+        @user = User.create(
+            name: params[:_profile][:name],
+            email: params[:_profile][:email],
+            provider: 'facebook',
+            password: Rails.application.secrets.secret_key_base[0..71]
+        )
+        if @user.save
+            token = JsonWebToken.encode(user_id: @user.id)
+            render json: { 
+                status: true,
+                token: token,
+                user_id: @user.id
+             }
+        else
+            render json: {
+                status: false,
+                message: @user.errors
+            }
+        end
+    end
+
+    def login_google
+        params.permit(:profileObj)
+        @user = User.create(
+            name: params[:profileObj][:name],
+            email: params[:profileObj][:email],
+            provider: 'google',
+            password: Rails.application.secrets.secret_key_base[0..71]
+        )
+        if @user.save
+            token = JsonWebToken.encode(user_id: @user.id)
+            render json: { 
+                status: true,
+                token: token,
+                user_id: @user.id
+             }
+        else
+            render json: {
+                status: false,
+                message: @user.errors
+            }
+        end
+    end
+
+    def fetch_user
+        @user = User.find_by_id(params[:uid])
+        if @user
+            render json: {
+                status: true,
+                name: @user.name,
+                email: @user.email
+            }
+        else
+            render json: {
+                status: false,
+                message: "user not found!"
+            }
+        end
+    end
+
     # private section 
     private
     
@@ -160,9 +222,11 @@ class UserController < ApplicationController
         command = AuthenticateUser.call(email, password)
 
         if command.success?
+        @user = User.find_by_email(email)
         render json: {
-            access_token: command.result,
-            message: 'Login Successful'
+            status: true,
+            token: command.result,
+            user_id: @user.id
         }
         else
         render json: { error: command.errors }, status: :unauthorized
