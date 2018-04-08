@@ -160,7 +160,8 @@ class UserController < ApplicationController
             token = JsonWebToken.encode(user_id: @user.id)
             render json: { 
                 status: true,
-                token: token
+                token: token,
+                user_id: @user.id
              }
         else
             render json: {
@@ -182,12 +183,29 @@ class UserController < ApplicationController
             token = JsonWebToken.encode(user_id: @user.id)
             render json: { 
                 status: true,
-                token: token
+                token: token,
+                user_id: @user.id
              }
         else
             render json: {
                 status: false,
                 message: @user.errors
+            }
+        end
+    end
+
+    def fetch_user
+        @user = User.find_by_id(params[:uid])
+        if @user
+            render json: {
+                status: true,
+                name: @user.name,
+                email: @user.email
+            }
+        else
+            render json: {
+                status: false,
+                message: "user not found!"
             }
         end
     end
@@ -199,9 +217,11 @@ class UserController < ApplicationController
         command = AuthenticateUser.call(email, password)
 
         if command.success?
+        @user = User.find_by_email(email)
         render json: {
-            access_token: command.result,
-            message: 'Login Successful'
+            status: true,
+            token: command.result,
+            user_id: @user.id
         }
         else
         render json: { error: command.errors }, status: :unauthorized

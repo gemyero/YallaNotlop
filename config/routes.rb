@@ -88,4 +88,7 @@ Rails.application.routes.draw do
   # login with google
   post 'users/login/google', to: 'user#login_google'
 
+  # get user data
+  get 'users/:uid', to: 'user#fetch_user'
+
 end
