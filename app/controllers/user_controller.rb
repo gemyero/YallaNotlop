@@ -28,7 +28,7 @@ class UserController < ApplicationController
                             render json: {status: false, message: 'group already contain friend'}
                         else
                             @group.users << @friend
-                            render json: {status: true, message: @friend}
+                            render json: {status: true, message: 'friend added to the group'}
                         end
                     else
                         # not in friend list
@@ -100,7 +100,7 @@ class UserController < ApplicationController
     end
 
     def register
-        user_params = params.require(:user).permit(:name, :email, :password)
+        user_params = params.permit(:name, :email, :password)
         @user = User.create(user_params)
         if @user.save
             response = { message: 'User created successfully'}
