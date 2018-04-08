@@ -107,11 +107,16 @@ class UserController < ApplicationController
             render json: { status: true, message: 'User created successfully' }
         else
             render json: { status: false, message: @user.errors }
-        end 
+        end
+        # puts "////////////////////**************" 
+        # puts user_params
+        # render json: {message: "ok"}
     end
 
     def login
-        authenticate params[:email], params[:password]
+        params.permit(:email, :password)
+        new_params = params.permit(:email, :password)
+        authenticate new_params[:email], new_params[:password]
     end
 
     def forget_password
