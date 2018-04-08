@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   # ex: users/1/friends?page=2&per_page=3
   get 'users/:uid/friends', to: 'user#list_user_friends'
 
+  # list certain user groups
   get 'users/:uid/groups', to: 'group#list_user_groups'
 
 end
