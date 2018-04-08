@@ -77,11 +77,23 @@ class OrderController < ApplicationController
         page = params[:page] || 1
         per_page = params[:per_page] || 5
         @user = User.find_by_id(params[:uid])
+        joined = 0
+        invited = 0
         if @user
             @orders = Order.page(page).per(per_page).where(user_id: @user.id)
-            @orders.each {|order|
-                
-            }
+            @orders.each do |order|
+                order.notifications.each do |notification|
+                    if notification.notif_type == 'invite'
+                        invited += 1
+                    else
+                        joined +=1
+                    end
+                end
+                order[:joined] = joined
+                order[:invited] = invited
+                joined = 0
+                invited = 0
+            end
             render json: @orders
         else
         end
