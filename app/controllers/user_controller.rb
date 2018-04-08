@@ -1,7 +1,12 @@
 class UserController < ApplicationController
 
+<<<<<<< HEAD
     skip_before_action :authenticate_request, only: %i[login register forget_password reset_password login_facebook login_google]
     skip_before_action :check_user, only: %i[login register forget_password reset_password login_google]
+=======
+    # skip_before_action :authenticate_request, only: %i[login register forget_password reset_password]
+    # skip_before_action :check_user, only: %i[login register forget_password reset_password]
+>>>>>>> 0fc39a964fe4f73430ada2a1baab533fdf67552d
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -60,7 +65,7 @@ class UserController < ApplicationController
                         render json: {status: false, message:'friend already in database'} 
                     else
                         @user.friends << @friend
-                        render json: {status: true, message:'friend added to friend list successfully'}
+                        render json: {status: true, message: @friend}
                     end
                 end
             else
