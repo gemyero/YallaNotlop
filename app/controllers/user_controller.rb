@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    skip_before_action :authenticate_request, only: %i[login register forget_password reset_password login_facebook login_google]
-    skip_before_action :check_user, only: %i[login register forget_password reset_password login_google]
+    #skip_before_action :authenticate_request, only: %i[login register forget_password reset_password login_facebook login_google]
+    #skip_before_action :check_user, only: %i[login register forget_password reset_password login_google]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -100,7 +100,7 @@ class UserController < ApplicationController
     end
 
     def register
-        user_params = params.permit(:name, :email, :password)
+        user_params = params.require(:user).permit(:name, :email, :password)
         @user = User.create(user_params)
         if @user.save
             response = { message: 'User created successfully'}
