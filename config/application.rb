@@ -35,5 +35,7 @@ module Test
 
     #autoloads lib folder during development
     config.autoload_paths << Rails.root.join('lib')
+
+    config.active_record.default_timezone = :local
   end
 end
