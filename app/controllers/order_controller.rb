@@ -79,6 +79,9 @@ class OrderController < ApplicationController
         @user = User.find_by_id(params[:uid])
         if @user
             @orders = Order.page(page).per(per_page).where(user_id: @user.id)
+            @orders.each {|order|
+                
+            }
             render json: @orders
         else
         end
