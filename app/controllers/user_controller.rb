@@ -114,7 +114,7 @@ class UserController < ApplicationController
         @user = User.find_by_email(params[:email])
         if @user
             token = JsonWebToken.encode(user_id: @user.id, exp: 2.hours.from_now)
-            body = "<a href=\"link_to_front?token=#{token}\">link_to_front?token=#{token}</a>"
+            body = "<a href=\"https://localhost:3000/password/reset?token=#{token}\">link_to_front?token=#{token}</a>"
             AppMailer.send_mail(@user.email, body, 'Password Reset').deliver!
             render json: {status: true, message: "Email sent successfully!"}
         else
