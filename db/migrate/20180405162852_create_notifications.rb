@@ -3,6 +3,7 @@ class CreateNotifications < ActiveRecord::Migration[5.1]
     create_table :notifications do |t|
       t.text :notif_type
       t.boolean :order_finished
+      t.boolean :viewed
       t.belongs_to :user
       t.belongs_to :order
       t.string :name
