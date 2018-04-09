@@ -1,4 +1,4 @@
-class User < ApplicationRecord
+class User < ActiveRecord::Base
     # encrypt password
     has_secure_password
 
@@ -14,4 +14,25 @@ class User < ApplicationRecord
 
     # user validations
     validates :email, uniqueness: true
+
+    def self.from_omniauth(auth)
+        where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
+            user.provider = auth.provider
+            user.id = auth.uid
+            user.name = auth.info.name
+            user.save!
+        end
+    end
 end
+
+
+# class User < ActiveRecord::Base
+#     def self.from_omniauth(auth)
+#       where(provider: auth.provider, id: auth.uid).first_or_initialize.tap do |user|
+#         user.provider = auth.provider
+#         user.id = auth.uid
+#         user.name = auth.info.name
+#         user.save!
+#       end
+#     end
+#   end
