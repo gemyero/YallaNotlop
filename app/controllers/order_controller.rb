@@ -101,4 +101,8 @@ class OrderController < ApplicationController
         end
     end
 
+    # def get_friends_orders
+
+    # end
+
 end
