@@ -94,4 +94,7 @@ Rails.application.routes.draw do
   # get number of new notifications
   get 'users/:uid/notifications/new', to: 'notification#get_new_notifications'
 
+  # friend activity
+  get 'users/:uid/friends-activity', to: 'user#get_friends_activity'
+
 end
