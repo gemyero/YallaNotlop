@@ -45,7 +45,7 @@ class OrderController < ApplicationController
                     p @notif
                     if @notif.save
                         ActionCable.server.broadcast "notifications_#{friend}",{
-                            type: "invite",
+                            notif_type: "invite",
                             order_id: @order[:id],
                             name: @user.name
                         }                       

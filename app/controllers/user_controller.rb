@@ -150,7 +150,7 @@ class UserController < ApplicationController
         @user = User.find_by_id(params[:uid])
         if @user
             @friends = User.find(params[:uid]).friends.page(page).per(per_page)
-            render json: @friends
+            render json: {status: true, message: @friends}
         else
         end
     end

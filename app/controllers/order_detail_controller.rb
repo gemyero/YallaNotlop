@@ -31,4 +31,9 @@ class OrderDetailController < ApplicationController
             render json: {status: false, message: "failed to delete the order"}
         end       
     end
+
+    def get_order_details
+        @orderDetails = OrderDetail.where(order_id: params[:oid]);
+        render json: {status: true, message: @orderDetails}           
+    end
 end
