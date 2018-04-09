@@ -7,7 +7,7 @@ class UserController < ApplicationController
         @user = User.find_by_id(params[:uid])
         @group = @user.groups_created.find_by_id(params[:gid])
         if (@group)
-            render json: @group.users
+            render json: {status: true, users: @group.users}
         else
             render json: {message: "no such group"}
         end
@@ -28,7 +28,7 @@ class UserController < ApplicationController
                             render json: {status: false, message: 'group already contain friend'}
                         else
                             @group.users << @friend
-                            render json: {status: true, message: 'friend added to the group'}
+                            render json: {status: true, message: @friend}
                         end
                     else
                         # not in friend list

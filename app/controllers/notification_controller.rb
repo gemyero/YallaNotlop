@@ -40,8 +40,9 @@ class NotificationController < ApplicationController
     def get_new_notifications
         if User.find_by_id(params[:uid])
             @notifs = Notification.where(user_id: params[:uid], viewed: false)
+            @notifiacations = Notification.where(user_id: params[:uid]).last(2)
             count = @notifs.length
-            render json: {status: true, count: count}
+            render json: {status: true, count: count, notifications: @notifiacations}
         else
             render json: {error: "ddd"}
         end
