@@ -1,4 +1,12 @@
-class User < ActiveRecord::Base
+class EmailValidator < ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+        unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+        record.errors[attribute] << (options[:message] || "is not an email")
+        end
+    end
+end
+
+class User < ApplicationRecord
     # encrypt password
     has_secure_password
 
@@ -13,8 +21,6 @@ class User < ActiveRecord::Base
     :join_table => 'friends'
 
     # user validations
-    validates :email, uniqueness: true
-
     def self.from_omniauth(auth)
         where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
             user.provider = auth.provider
@@ -23,6 +29,9 @@ class User < ActiveRecord::Base
             user.save!
         end
     end
+    validates :name, :email, :provider, presence: true
+    validates :email, :name, uniqueness: true
+    validates :email, email: true
 end
 
 

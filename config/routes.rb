@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   devise_for :models
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  # action cable server URI
+  mount ActionCable.server => '/cable'
+
   # list certain group users
   get 'users/:uid/groups/:gid/users', to: 'user#list_group_users'
 
@@ -71,6 +74,34 @@ Rails.application.routes.draw do
     resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
   
-    root to: "home#show"
+
+  # route to forget password
+  # body -> email
+  post 'password/forget', to: 'user#forget_password'
+
+  # route to reset password
+  # body -> password
+  # query string -> token=
+  post 'password/reset', to: 'user#reset_password'
+
+  # list user orders with pagination
+  # ex: users/1/orders?page=2&per_page=3
+  get 'users/:uid/orders', to: 'order#list_user_orders'
+
+  # list user friends with pagination
+  # ex: users/1/friends?page=2&per_page=3
+  get 'users/:uid/friends', to: 'user#list_user_friends'
+
+  # list certain user groups
+  get 'users/:uid/groups', to: 'group#list_user_groups'
+
+  # login with facebook
+  post 'users/login/facebook', to: 'user#login_facebook'
+
+  # login with google
+  post 'users/login/google', to: 'user#login_google'
+
+  # get user data
+  get 'users/:uid', to: 'user#fetch_user'
 
 end

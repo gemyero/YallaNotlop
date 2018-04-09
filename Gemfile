@@ -23,7 +23,7 @@ gem 'bcrypt', '~> 3.1.7'
 # gem 'capistrano-rails', group: :development
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -45,3 +45,4 @@ gem 'simple_command'
 gem 'omniauth-facebook'
 gem 'devise'
 gem "omniauth-google-oauth2", "~> 0.2.1"
+gem 'kaminari'

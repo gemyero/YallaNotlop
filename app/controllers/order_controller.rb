@@ -8,11 +8,32 @@ class OrderController < ApplicationController
             params[:order][:user_id] = params[:uid]
             @order = Order.create(params[:order])
 
+            if @order.save
+                @all_friends = @user.friends
+                @all_friends.each{ |friend|
+                    ActionCable.server.broadcast "activities_#{friend.id}",{
+                        order_id: @order[:id],
+                        name: @user.name,
+                        restaurant: @order.restaurant,
+                        order_for: @order.order_for
+                    } 
+                }
+            end
+
             params[:friends].each { |friend|
+                p @user.friends.find_by_id(friend)
                 if @user.friends.find_by_id(friend)
-                    Notification.create({user_id: friend, notif_type: "invite", 
+                    @notif = Notification.create(user_id: friend, notif_type: "invite", 
                                         order_finished: false, order_id: @order[:id],
-                                        name: @user.name, viewed: false})
+                                        name: @user.name, viewed: false)
+                    p @notif
+                    if @notif.save
+                        ActionCable.server.broadcast "notifications_#{friend}",{
+                            type: "invite",
+                            order_id: @order[:id],
+                            name: @user.name
+                        }                       
+                    end
                 end
             }
 
@@ -50,6 +71,32 @@ class OrderController < ApplicationController
             render json: {status: false, message: "failed to finish the order"}
         end      
 
+    end
+
+    def list_user_orders
+        page = params[:page] || 1
+        per_page = params[:per_page] || 5
+        @user = User.find_by_id(params[:uid])
+        joined = 0
+        invited = 0
+        if @user
+            @orders = Order.page(page).per(per_page).where(user_id: @user.id)
+            @orders.each do |order|
+                order.notifications.each do |notification|
+                    if notification.notif_type == 'invite'
+                        invited += 1
+                    else
+                        joined +=1
+                    end
+                end
+                order[:joined] = joined
+                order[:invited] = invited
+                joined = 0
+                invited = 0
+            end
+            render json: @orders
+        else
+        end
     end
 
 end

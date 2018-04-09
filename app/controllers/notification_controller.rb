@@ -13,8 +13,15 @@ class NotificationController < ApplicationController
         params.require(:notification).permit! 
 
         if User.find_by_id(params[:uid])
-            Notification.create({name: params[:name], order_id: params[:order_id],
+            @notif = Notification.create({name: params[:name], order_id: params[:order_id],
                                 user_id: params[:uid], order_finished: false, notif_type: "join"})
+            if @notif.save
+                ActionCable.server.broadcast "notifications_#{params[:uid]}",{
+                message: "join",
+                order_id: params[:order_id],
+                name: params[:name]
+                }                       
+            end                    
             render json: {status: true, message: "notification added"}
         else
             render json: {status: false, message: "failed to add notification"}

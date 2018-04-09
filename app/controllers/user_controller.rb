@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
-    skip_before_action :authenticate_request, only: %i[login register]
-    skip_before_action :check_user, only: %i[login register]
+    #skip_before_action :authenticate_request, only: %i[login register forget_password reset_password login_facebook login_google]
+    #skip_before_action :check_user, only: %i[login register forget_password reset_password login_google]
 
     def list_group_users
         @user = User.find_by_id(params[:uid])
@@ -60,7 +60,7 @@ class UserController < ApplicationController
                         render json: {status: false, message:'friend already in database'} 
                     else
                         @user.friends << @friend
-                        render json: {status: true, message:'friend added to friend list successfully'}
+                        render json: {status: true, message: {id: @friend.id, name: @friend.name}}
                     end
                 end
             else
@@ -77,7 +77,7 @@ class UserController < ApplicationController
         @friend = @group.users.find_by_id(params[:fid])
         if @group and @user and @friend
             @group.users.delete(@friend)
-            render json: {status: true, message: "friend deleted from group successfully"}
+            render json: {status: true, message: @group.users}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
@@ -85,10 +85,15 @@ class UserController < ApplicationController
 
     def delete_friend_from_friend_list
         @user = User.find_by_id(params[:uid])
+        # p @user
+        p params[:fid]
         @friend = @user.friends.find_by_id(params[:fid])
+        p @friend
         if @user and @friend
             @user.friends.delete(@friend)
-            render json: {status: true, message: "friend deleted from friendlist successfully"}
+            # redirect_to action: "list_user_friends", uid: params[:uid]
+            # @user.friends
+            render json: {status: true, message: @user.friends}
         else
             render json: {status: false, message: "friend not deleted!"}
         end
@@ -109,6 +114,107 @@ class UserController < ApplicationController
         authenticate params[:email], params[:password]
     end
 
+    def forget_password
+        params.permit(:email)
+        @user = User.find_by_email(params[:email])
+        if @user
+            token = JsonWebToken.encode(user_id: @user.id, exp: 2.hours.from_now)
+            body = "<a href=\"https://localhost:3000/password/reset?token=#{token}\">link_to_front?token=#{token}</a>"
+            AppMailer.send_mail(@user.email, body, 'Password Reset').deliver!
+            render json: {status: true, message: "Email sent successfully!"}
+        else
+            render json: {status: false, message: "Email not sent!"}
+        end
+    end
+
+    def reset_password
+        params.permit(:password, :token)
+        password = params[:password]
+        token = params[:token]
+        body = JsonWebToken.decode(token)
+        user_id = body["user_id"]
+        @user = User.find_by_id(user_id)
+        if @user
+            @user.update(password: password)
+            render json: {status: true, message: 'password updated successfully!'}
+        else
+            render json: {status: false, message: 'user not found!'}
+        end
+    end
+
+    def list_user_friends
+        page = params[:page] || 1
+        per_page = params[:per_page] || 5
+        @user = User.find_by_id(params[:uid])
+        if @user
+            @friends = User.find(params[:uid]).friends.page(page).per(per_page)
+            render json: @friends
+        else
+        end
+    end
+
+    def login_facebook
+        params.permit(:_profile)
+        @user = User.create(
+            name: params[:_profile][:name],
+            email: params[:_profile][:email],
+            provider: 'facebook',
+            password: Rails.application.secrets.secret_key_base[0..71]
+        )
+        if @user.save
+            token = JsonWebToken.encode(user_id: @user.id)
+            render json: { 
+                status: true,
+                token: token,
+                user_id: @user.id
+             }
+        else
+            render json: {
+                status: false,
+                message: @user.errors
+            }
+        end
+    end
+
+    def login_google
+        params.permit(:profileObj)
+        @user = User.create(
+            name: params[:profileObj][:name],
+            email: params[:profileObj][:email],
+            provider: 'google',
+            password: Rails.application.secrets.secret_key_base[0..71]
+        )
+        if @user.save
+            token = JsonWebToken.encode(user_id: @user.id)
+            render json: { 
+                status: true,
+                token: token,
+                user_id: @user.id
+             }
+        else
+            render json: {
+                status: false,
+                message: @user.errors
+            }
+        end
+    end
+
+    def fetch_user
+        @user = User.find_by_id(params[:uid])
+        if @user
+            render json: {
+                status: true,
+                name: @user.name,
+                email: @user.email
+            }
+        else
+            render json: {
+                status: false,
+                message: "user not found!"
+            }
+        end
+    end
+
     # private section 
     private
     
@@ -116,9 +222,11 @@ class UserController < ApplicationController
         command = AuthenticateUser.call(email, password)
 
         if command.success?
+        @user = User.find_by_email(email)
         render json: {
-            access_token: command.result,
-            message: 'Login Successful'
+            status: true,
+            token: command.result,
+            user_id: @user.id
         }
         else
         render json: { error: command.errors }, status: :unauthorized
