@@ -217,6 +217,30 @@ class UserController < ApplicationController
         end
     end
 
+    def get_friends_activity
+        friends_activity = []
+        @user = User.find_by_id(params[:uid])
+        if @user
+            @friends = @user.friends
+            @friends.each do |friend|
+                friend_activity = {}
+                friend_activity[:friend_name] = friend.name
+                
+                friend_orders = []
+
+                friend.orders.each do |order|
+                    if order.state == 'waiting'
+                        friend_orders.push order
+                    end                    
+                end
+                friend_activity[:friend_orders] = friend_orders
+                friends_activity.push friend_activity
+            end
+            render json: friends_activity
+        else
+        end
+    end
+
     # private section 
     private
     
