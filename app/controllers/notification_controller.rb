@@ -35,5 +35,15 @@ class NotificationController < ApplicationController
         else
             render json: {status: false, message: "failed to view notifications"}
         end
-    end    
+    end 
+    
+    def get_new_notifications
+        if User.find_by_id(params[:uid])
+            @notifs = Notification.where(user_id: params[:uid], viewed: false)
+            count = @notifs.length
+            render json: {status: true, count: count}
+        else
+            render json: {error: "ddd"}
+        end
+    end 
 end

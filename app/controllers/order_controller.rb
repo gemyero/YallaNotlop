@@ -1,7 +1,8 @@
 class OrderController < ApplicationController
 
     def add_order
-        params.require(:order).permit!       
+        params.require(:order).permit!
+        p params[:order]       
         @user = User.find_by_id(params[:uid])
 
         if @user
@@ -21,7 +22,8 @@ class OrderController < ApplicationController
             end
 
             params[:friends].each { |friend|
-                p @user.friends.find_by_id(friend)
+                # p @user.friends.find_by_id(friend)
+                friend = friend[:id]
                 if @user.friends.find_by_id(friend)
                     @notif = Notification.create(user_id: friend, notif_type: "invite", 
                                         order_finished: false, order_id: @order[:id],

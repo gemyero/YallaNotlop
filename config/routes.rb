@@ -91,4 +91,7 @@ Rails.application.routes.draw do
   # get user data
   get 'users/:uid', to: 'user#fetch_user'
 
+  # get number of new notifications
+  get 'users/:uid/notifications/new', to: 'notification#get_new_notifications'
+
 end
