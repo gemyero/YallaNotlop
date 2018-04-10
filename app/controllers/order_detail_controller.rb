@@ -2,12 +2,18 @@ class OrderDetailController < ApplicationController
 
     def add_order_details
         params.require(:order_detail).permit!
-       
+        p params
         @order_invite = Notification.where(order_id: params[:order_id], user_id: params[:uid])[0]
 
         if @order_invite
             params[:order_detail][:user_id] = params[:uid]
-            OrderDetail.create(params[:order_detail])
+            newOrder = OrderDetail.create(params[:order_detail])
+            @notifications = Notification.where(params[:order_id])
+            @notifications.each { |notif|
+                if notif.user_id != params[:uid]
+                    ActionCable.server.broadcast "orders_#{notif.user_id}", newOrder
+                end
+            }            
             render json: {status: true, message: "order details added successfully"}
         else
             render json: {status: false, message: "you don not have invitation"}
