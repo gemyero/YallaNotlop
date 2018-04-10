@@ -26,6 +26,8 @@ class UserController < ApplicationController
                         if @group.users.include?(@friend)
                             # group contains friend
                             render json: {status: false, message: 'group already contain friend'}
+                        elsif @friend == @user
+                            render json: {status: false, message: 'you can not add your self!'}
                         else
                             @group.users << @friend
                             render json: {status: true, message: @friend}
@@ -121,7 +123,7 @@ class UserController < ApplicationController
         @user = User.find_by_email(params[:email])
         if @user
             token = JsonWebToken.encode(user_id: @user.id, exp: 2.hours.from_now)
-            body = "<a href=\"https://localhost:3000/password/reset?token=#{token}\">link_to_front?token=#{token}</a>"
+            body = "<a href=\"http://localhost:3000/password/reset?token=#{token}\">link_to_front?token=#{token}</a>"
             AppMailer.send_mail(@user.email, body, 'Password Reset').deliver!
             render json: {status: true, message: "Email sent successfully!"}
         else
@@ -157,47 +159,71 @@ class UserController < ApplicationController
 
     def login_facebook
         params.permit(:_profile)
-        @user = User.create(
-            name: params[:_profile][:name],
-            email: params[:_profile][:email],
-            provider: 'facebook',
-            password: Rails.application.secrets.secret_key_base[0..71]
-        )
-        if @user.save
+
+        @user = User.find_by_email(params[:_profile][:email])
+
+        if @user
             token = JsonWebToken.encode(user_id: @user.id)
             render json: { 
                 status: true,
                 token: token,
                 user_id: @user.id
-             }
-        else
-            render json: {
-                status: false,
-                message: @user.errors
             }
+        else
+            @user = User.create(
+                name: params[:_profile][:name],
+                email: params[:_profile][:email],
+                provider: 'facebook',
+                password: Rails.application.secrets.secret_key_base[0..71]
+            )
+            if @user.save
+                token = JsonWebToken.encode(user_id: @user.id)
+                render json: { 
+                    status: true,
+                    token: token,
+                    user_id: @user.id
+                }
+            else
+                render json: {
+                    status: false,
+                    message: @user.errors
+                }
+            end
         end
     end
 
     def login_google
         params.permit(:profileObj)
-        @user = User.create(
-            name: params[:profileObj][:name],
-            email: params[:profileObj][:email],
-            provider: 'google',
-            password: Rails.application.secrets.secret_key_base[0..71]
-        )
-        if @user.save
+
+        @user = User.find_by_email(params[:profileObj][:email])
+
+        if @user
+            token = JsonWebToken.encode(user_id: @user.id)
+            render json: { 
+                status: true,
+                token: token,
+                user_id: @user.id
+            }
+        else
+            @user = User.create(
+                name: params[:profileObj][:name],
+                email: params[:profileObj][:email],
+                provider: 'google',
+                password: Rails.application.secrets.secret_key_base[0..71]
+            )
+            if @user.save
             token = JsonWebToken.encode(user_id: @user.id)
             render json: { 
                 status: true,
                 token: token,
                 user_id: @user.id
              }
-        else
-            render json: {
-                status: false,
-                message: @user.errors
-            }
+            else
+                render json: {
+                    status: false,
+                    message: @user.errors
+                }
+            end
         end
     end
 
