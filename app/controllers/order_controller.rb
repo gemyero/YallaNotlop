@@ -9,16 +9,7 @@ class OrderController < ApplicationController
             params[:order][:user_id] = params[:uid]
             @order = Order.create(params[:order])
 
-            if @order.save
-                # @all_friends = @user.friends
-                # @all_friends.each{ |friend|
-                #     ActionCable.server.broadcast "activities_#{friend.id}",{
-                #         order_id: @order[:id],
-                #         name: @user.name,
-                #         restaurant: @order.restaurant,
-                #         order_for: @order.order_for
-                #     } 
-                # }
+            if @order.save              
                 @all_users = User.all
                 @all_users.each { |u|
                     if u.friends.include?(@user)
@@ -28,8 +19,6 @@ class OrderController < ApplicationController
                             restaurant: @order.restaurant,
                             order_for: @order.order_for
                             } 
-                            # p "yaaaaaa"
-
                     end
                 }
             end

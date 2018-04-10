@@ -76,11 +76,12 @@ class OrderDetailController < ApplicationController
     def get_order_details
         @names = []
         @orderDetails = OrderDetail.where(order_id: params[:oid]);
-        @state = Order.find_by_id(params[:oid])[:state]
+        @order = Order.find_by_id(params[:oid])
+        @state = @order[:state]        
         @orderDetails.each {|order|
             user = order.user.name
             @names.push(user)
         }
-        render json: {status: true, message: {orders: @orderDetails, names: @names, state: @state}}           
+        render json: {status: true, message: {orders: @orderDetails, names: @names, state: @state, menu_img: @order[:menu_img]}}           
     end
 end

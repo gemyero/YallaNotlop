@@ -102,7 +102,7 @@ class UserController < ApplicationController
     end
 
     def register
-        user_params = params.permit(:name, :email, :password)
+        user_params = params.permit(:name, :email, :password, :img, :user)
         @user = User.create(user_params)
         if @user.save
             response = { message: 'User created successfully'}
@@ -233,7 +233,8 @@ class UserController < ApplicationController
             render json: {
                 status: true,
                 name: @user.name,
-                email: @user.email
+                email: @user.email,
+                image: @user.img
             }
         else
             render json: {
