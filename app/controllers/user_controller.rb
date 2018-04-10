@@ -27,7 +27,7 @@ class UserController < ApplicationController
                             # group contains friend
                             render json: {status: false, message: 'group already contain friend'}
                         elsif @friend == @user
-                            render json: {status: false, message: 'you can not add your self!'}
+                            render json: {status: false, message: 'you can not add yourself to any of your groups!'}
                         else
                             @group.users << @friend
                             render json: {status: true, message: @friend}
