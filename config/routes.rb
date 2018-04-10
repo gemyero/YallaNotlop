@@ -99,4 +99,6 @@ Rails.application.routes.draw do
 
   get 'orders/:oid', to: 'order_detail#get_order_details'
 
+  get '/', to: 'users#login'
+
 end
