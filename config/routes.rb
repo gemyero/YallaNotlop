@@ -97,6 +97,6 @@ Rails.application.routes.draw do
   # friend activity
   get 'users/:uid/friends-activity', to: 'user#get_friends_activity'
 
-  get 'orders/:oid', to 'order_detail#get_order_details'
+  get 'orders/:oid', to: 'order_detail#get_order_details'
 
 end
